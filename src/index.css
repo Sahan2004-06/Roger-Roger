@@ -1,0 +1,95 @@
+/* Design tokens: every colour and font lives here, so the theme is easy to change. */
+:root {
+  --bg: #0b0e13;
+  --bg-raised: #121821;
+  --bg-panel: #18202b;
+  --line: #273242;
+  --line-strong: #3a4a5f;
+  --text: #ece6d8;          /* warm "bone" white */
+  --text-muted: #a3acb8;
+  --amber: #f0a830;         /* droid photoreceptor amber, the main accent */
+  --amber-deep: #c47f12;
+  --violet: #8f74c9;        /* Confederacy violet, the second accent */
+  --danger: #ff6b5a;
+
+  --aerial: #6fc3e6;
+  --ground: #e39556;
+  --space: #b39ce8;
+  --naval: #4fd1b2;
+
+  --font-display: 'Oxanium', 'Segoe UI', sans-serif;
+  --font-body: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --radius: 10px;
+  --shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.8);
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgba(143, 116, 201, 0.16), transparent 60%),
+    radial-gradient(900px 500px at -10% 30%, rgba(240, 168, 48, 0.07), transparent 60%),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  line-height: 1.1;
+  margin: 0;
+}
+
+a {
+  color: var(--amber);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+/* Visible keyboard focus everywhere. */
+:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 3px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Respect people who turn off animations in their OS settings. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
