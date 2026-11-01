@@ -6,6 +6,7 @@ import StatusLoader from '../components/StatusLoader.jsx';
 import ErrorPanel from '../components/ErrorPanel.jsx';
 import UnitCard from '../components/UnitCard.jsx';
 import FilterBar from '../components/FilterBar.jsx';
+import SearchBox from '../components/SearchBox.jsx';
 
 // Turn one SWAPI vehicle/starship into the shape our cards use,
 // or return null if it isn't a Separatist machine.
@@ -31,6 +32,7 @@ export default function Arsenal({ apiBase }) {
   const starships = useFetch(`${apiBase}/starships/`, { allPages: true });
 
   const [domain, setDomain] = useState('all');
+  const [query, setQuery] = useState('');
 
   const loading = vehicles.loading || starships.loading;
   const error = vehicles.error || starships.error;
@@ -40,7 +42,7 @@ export default function Arsenal({ apiBase }) {
   };
 
   // Combine SWAPI data with the hand-written archive. useMemo means this
-  // only re-runs when the fetched data changes, not on every click.
+  // only re-runs when the fetched data changes, not on every keystroke.
   const units = useMemo(() => {
     if (!vehicles.data || !starships.data) return [];
     const fromApi = [...vehicles.data, ...starships.data].map(fromSwapi).filter(Boolean);
@@ -55,11 +57,15 @@ export default function Arsenal({ apiBase }) {
     return c;
   }, [units]);
 
-  // Client-side filtering by domain, applied to data we already fetched.
-  const visible = useMemo(
-    () => (domain === 'all' ? units : units.filter((u) => u.domain === domain)),
-    [units, domain]
-  );
+  // Client-side filtering: domain button + search text, applied to fetched data.
+  const visible = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return units.filter((u) => {
+      if (domain !== 'all' && u.domain !== domain) return false;
+      if (!q) return true;
+      return [u.name, u.model, u.manufacturer, u.kind].some((f) => f?.toLowerCase().includes(q));
+    });
+  }, [units, domain, query]);
 
   return (
     <section className="section" id="arsenal" aria-labelledby="arsenal-title">
@@ -82,6 +88,7 @@ export default function Arsenal({ apiBase }) {
         <>
           <div className="toolbar">
             <FilterBar active={domain} onChange={setDomain} counts={counts} />
+            <SearchBox value={query} onChange={setQuery} />
           </div>
 
           <p className="results-count" aria-live="polite">
@@ -96,8 +103,8 @@ export default function Arsenal({ apiBase }) {
             </div>
           ) : (
             <div className="empty">
-              <p>No units in this domain yet.</p>
-              <button type="button" className="btn" onClick={() => setDomain('all')}>
+              <p>No units match “{query}”. Even the Confederacy can’t field what doesn’t exist.</p>
+              <button type="button" className="btn" onClick={() => { setQuery(''); setDomain('all'); }}>
                 Clear filters
               </button>
             </div>
