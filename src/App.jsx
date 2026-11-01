@@ -1,11 +1,15 @@
 import { API_BASE } from './config.js';
+import Hero from './components/Hero.jsx';
 import Arsenal from './sections/Arsenal.jsx';
+import './App.css';
 
 export default function App() {
   return (
-    <main>
-      <h1 style={{ padding: '48px 24px 0' }}>Roger Roger</h1>
-      <Arsenal apiBase={API_BASE} />
-    </main>
+    <>
+      <Hero />
+      <main>
+        <Arsenal apiBase={API_BASE} />
+      </main>
+    </>
   );
 }
