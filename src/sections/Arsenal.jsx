@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { useFetch } from '../hooks/useFetch.js';
 import { arsenalEntry } from '../data/arsenal.js';
 import { ARCHIVE } from '../data/archive.js';
@@ -7,6 +7,7 @@ import ErrorPanel from '../components/ErrorPanel.jsx';
 import UnitCard from '../components/UnitCard.jsx';
 import FilterBar from '../components/FilterBar.jsx';
 import SearchBox from '../components/SearchBox.jsx';
+import UnitDetail from '../components/UnitDetail.jsx';
 
 // Turn one SWAPI vehicle/starship into the shape our cards use,
 // or return null if it isn't a Separatist machine.
@@ -33,6 +34,7 @@ export default function Arsenal({ apiBase }) {
 
   const [domain, setDomain] = useState('all');
   const [query, setQuery] = useState('');
+  const [selected, setSelected] = useState(null);
 
   const loading = vehicles.loading || starships.loading;
   const error = vehicles.error || starships.error;
@@ -67,6 +69,8 @@ export default function Arsenal({ apiBase }) {
     });
   }, [units, domain, query]);
 
+  const closeDetail = useCallback(() => setSelected(null), []);
+
   return (
     <section className="section" id="arsenal" aria-labelledby="arsenal-title">
       <header className="section__head">
@@ -98,7 +102,7 @@ export default function Arsenal({ apiBase }) {
           {visible.length > 0 ? (
             <div className="grid">
               {visible.map((u) => (
-                <UnitCard key={u.name} unit={u} onSelect={(unit) => console.log('Selected', unit)} />
+                <UnitCard key={u.name} unit={u} onSelect={setSelected} />
               ))}
             </div>
           ) : (
@@ -112,6 +116,7 @@ export default function Arsenal({ apiBase }) {
         </>
       )}
 
+      {selected && <UnitDetail unit={selected} onClose={closeDetail} />}
     </section>
   );
 }
